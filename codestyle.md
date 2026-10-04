@@ -1,80 +1,79 @@
 # Backend Code Style
 
-## 代码规范来源
+## Source of the Standard
 
-本项目后端代码遵循 **[PEP 8 — Style Guide for Python Code](https://peps.python.org/pep-0008/)**，
-并参考 **[Google Python Style Guide](https://google.github.io/styleguide/pyguide.html)** 中的注释与文档字符串约定。
+This project's backend code follows **[PEP 8 — Style Guide for Python Code](https://peps.python.org/pep-0008/)**, and references the **[Google Python Style Guide](https://google.github.io/styleguide/pyguide.html)** for its commenting and docstring conventions.
 
-- PEP 8：<https://peps.python.org/pep-0008/>
-- Google Python Style Guide：<https://google.github.io/styleguide/pyguide.html>
+- PEP 8: <https://peps.python.org/pep-0008/>
+- Google Python Style Guide: <https://google.github.io/styleguide/pyguide.html>
 
-## 1. 命名规范
+## 1. Naming
 
-| 元素 | 规则 | 示例 |
+| Element | Rule | Example |
 | --- | --- | --- |
-| 模块 / 包 | 小写 + 下划线 | `history_service.py` |
-| 类 / 异常 | 大驼峰 `PascalCase` | `ExpressionError`、`CalculateRequest` |
-| 函数 / 方法 / 变量 | 小写 + 下划线 `snake_case` | `evaluate()`、`record_id` |
-| 常量 | 全大写 + 下划线 | `MAX_DECIMAL_PLACES`、`_PRECEDENCE` |
-| 模块内部私有 | 前缀单下划线 | `_tokenize()`、`_eval_rpn()` |
+| Module / package | lowercase with underscores | `history_service.py` |
+| Class / exception | `PascalCase` | `ExpressionError`, `CalculateRequest` |
+| Function / method / variable | lowercase with underscores `snake_case` | `evaluate()`, `record_id` |
+| Constant | uppercase with underscores | `MAX_DECIMAL_PLACES`, `_PRECEDENCE` |
+| Module-private member | single leading underscore | `_tokenize()`, `_eval_rpn()` |
 
-## 2. 缩进与格式
+## 2. Indentation and Formatting
 
-- 使用 **4 个空格** 缩进，禁止 Tab。
-- 每行不超过 **88** 个字符（与 Black 默认一致）。
-- 顶层定义之间空 **2 行**，类内方法之间空 **1 行**。
-- 运算符两侧、逗号 / 冒号后各保留一个空格。
-- 文件统一使用 **UTF-8** 编码，字符串优先使用双引号以与格式化工具保持一致。
+- Use **4 spaces** for indentation; tabs are forbidden.
+- Keep lines under **88** characters (matching the Black default).
+- Leave **2 blank lines** between top-level definitions and **1 blank line** between methods in a class.
+- Keep a single space on both sides of operators and after commas / colons.
+- Files are **UTF-8** encoded; prefer double quotes for strings to stay consistent with the formatter.
 
-## 3. 导入规范
+## 3. Imports
 
-- 所有导入置于文件顶部。
-- 顺序：标准库 → 第三方库 → 本项目模块，各组之间用空行分隔。
-- 优先使用绝对导入；包内部使用显式相对导入（如 `from ..calculator import evaluate`）。
-- 禁止使用 `from module import *`。
+- Put all imports at the top of the file.
+- Order them: standard library → third-party → project modules, with a blank line between groups.
+- Prefer absolute imports; use explicit relative imports inside a package (e.g. `from ..calculator import evaluate`).
+- Never use `from module import *`.
 
-## 4. 类型注解
+## 4. Type Annotations
 
-- 所有公开函数、方法必须标注参数与返回值类型。
-- 使用 `from __future__ import annotations` 以便使用前向引用。
-- 复杂类型使用 `typing`（`List`、`Dict`、`Optional` 等）。
+- All public functions and methods must annotate parameter and return types.
+- Use `from __future__ import annotations` to enable forward references.
+- Use `typing` for complex types (`List`, `Dict`, `Optional`, etc.).
 
 ```python
 def evaluate(expression: str) -> Decimal:
     ...
 ```
 
-## 5. 文档字符串
+## 5. Docstrings
 
-- 所有公开模块、类、函数使用文档字符串。
-- 使用三重双引号；一行可写完时保持单行。
+- All public modules, classes and functions have docstrings.
+- Use triple double quotes; keep a one-line docstring when it fits.
 
 ```python
 def delete_one(record_id: int) -> int:
     """Delete a single record, returning the number of deleted rows."""
 ```
 
-## 6. 错误处理
+## 6. Error Handling
 
-- 业务异常使用自定义异常类（`ExpressionError`），不抛裸 `Exception`。
-- 禁止空 `except:`；捕获异常时明确异常类型。
-- 资源的获取与释放使用上下文管理器（`with`）或 `try/finally`，保证连接关闭。
-- **严禁使用 `eval` / `exec` 执行用户输入。**
+- Use custom exception classes for business errors (e.g. `ExpressionError`), never bare `Exception`.
+- No bare `except:`; always catch explicit exception types.
+- Acquire and release resources with context managers (`with`) or `try/finally` to guarantee connections are closed.
+- **Never use `eval` / `exec` to execute user input.**
 
-## 7. 注释
+## 7. Comments
 
-- 注释用于解释「为什么」，而非「做什么」。
-- 注释与代码同步更新，避免失效注释。
-- 行内注释与代码至少间隔 2 个空格。
+- Comments explain "why", not "what".
+- Keep comments in sync with the code; remove stale comments.
+- Leave at least 2 spaces between inline comments and code.
 
-## 8. 分层约定
+## 8. Layering Conventions
 
-- `controller` 仅处理 HTTP 请求 / 响应与状态码。
-- `service` 承载业务编排。
-- `model` 只放数据模型。
-- 数据库访问集中管理，不在 controller 中直接拼 SQL。
+- `controller` only handles HTTP requests / responses and status codes.
+- `service` carries the business orchestration.
+- `model` contains data models only.
+- Database access is centralized; never build raw SQL in controllers.
 
-## 9. 检查工具（可选）
+## 9. Check Tools (optional)
 
 ```bash
 pip install flake8 black isort
